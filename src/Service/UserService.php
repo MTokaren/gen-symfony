@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use App\Entity\Contact;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -15,12 +14,12 @@ class UserService
         $this->entityManager = $entityManager;
     }
 
-    public function createContact(array $data): User
+    public function createUser(array $data): User
     {
         $user = new User();
-        $user->setFirstName($data['firstName']);
-        $user->setLastName($data['lastName']);
-        $user->setContacts($data['phoneNumbers']);
+        $user->setFirstName($data['firstName'] ?? "");
+        $user->setLastName($data['lastName'] ?? "");
+        $user->setContacts($data['phoneNumbers'] ?? []);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
