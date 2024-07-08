@@ -23,6 +23,9 @@ class User
     #[ORM\Column(type: 'json', nullable: true)]
     private array $contacts;
 
+    #[ORM\Column(type: 'string', length: 100, nullable: true)]
+    private string $country;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,5 +62,16 @@ class User
     public function getContacts(): array
     {
         return $this->contacts;
+    }
+
+    public function getCountry(): string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(string $country): self
+    {
+        $this->country = $country;
+        return $this;
     }
 }

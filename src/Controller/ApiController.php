@@ -12,12 +12,12 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class ApiController extends AbstractController
 {
-    private $contactService;
+    private $userService;
     private $messageBus;
 
     public function __construct(UserService $userService, MessageBusInterface $messageBus)
     {
-        $this->contactService = $userService;
+        $this->userService = $userService;
         $this->messageBus = $messageBus;
     }
 
@@ -30,7 +30,7 @@ class ApiController extends AbstractController
         $validSortOrders = ['ASC', 'DESC'];
         $sortOrder = in_array(strtoupper($sortOrder), $validSortOrders) ? strtoupper($sortOrder) : 'ASC';
 
-        $contacts = $this->contactService->getAllContacts($sortField, $sortOrder);
+        $contacts = $this->userService->getAllContacts($sortField, $sortOrder);
 
         return $this->json($contacts);
     }
@@ -40,10 +40,11 @@ class ApiController extends AbstractController
     {
         $jsonData = $request->getContent();
         $data = json_decode($jsonData, true);
+        $data['country'] = $this->userService->getCountryFromRequest($request);
 
         $this->messageBus->dispatch(new CreateUserMessage($data));
 
-        $contact = $this->contactService->createUser($data);
+        $contact = $this->userService->createUser($data);
 
         return $this->json(['message' => 'User created', 'id' => $contact->getId()], Response::HTTP_CREATED);
     }

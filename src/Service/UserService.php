@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class UserService
 {
@@ -33,5 +34,16 @@ class UserService
         $sortOrder = in_array(strtoupper($sortOrder), $validSortOrders) ? strtoupper($sortOrder) : 'ASC';
 
         return $this->entityManager->getRepository(User::class)->findBy([], [$sortField => $sortOrder]);
+    }
+
+    public function getCountryFromRequest(Request $request): ?string
+    {
+        $apiKey = "9b8564ee30fcee6a0990fff66292c565";
+        $ip = $request->getClientIp();
+
+        $res = file_get_contents("https://www.iplocate.io/api/lookup/{$ip}?apikey={$apiKey}");
+        $res = json_decode($res, true);
+
+        return $res['country'];
     }
 }
